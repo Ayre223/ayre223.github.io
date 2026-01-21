@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FErdle GBA</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<button style="background-color:#141414; float:up-left;" onclick="openHelp()"><img src="Square/help.png"></img></button>
+    <h1> FErdle GBA </h1>
+	<h2 style="text-align:center;"> A Fire Emblem 6-8 <a style="color:white;" href="https://www.nytimes.com/games/wordle/index.html">Wordle</a>-like by jacobsmash1 <h2>
+	<h3 style="text-align:center;"> Guess a playable unit from Fire Emblem 6-8! <h3>
+    <div id="game-board">
+		<div class="typing-row">
+			<div class="dropdown">
+				<input type="text" placeholder="Guess here..." id="typeBox" onkeyup="filterSearch()"></input>
+				<div class="dropdown-search" id="searchbar">
+				</div>
+			</div>
+		</div>
+		<div id="knowledge-cont">
+			<div id="names">
+				<div class="knowledge-div" style="background-image: url(Square/gray.png);" id="game"><img src="Names/game.png"></img></div>
+				<div class="knowledge-div" style="background-image: url(Square/gray.png);" id="chapter"><img src="Names/chapter.png"></img></div>
+				<div class="knowledge-div" style="background-image: url(Square/gray.png);" id="class"><img src="Names/class.png"></img></div>
+				<div class="knowledge-div" style="background-image: url(Square/gray.png);" id="level"><img src="Names/level.png"></img></div>
+				<div class="knowledge-div" style="background-image: url(Square/gray.png);" id="affinities"><img src="Names/affinity.png"></img></div>
+			</div>
+		</div>
+    
+		<div class="dropdown-content" id="help">
+			<button style="float:right; background-color:#141414; border: none;" onclick="closeHelp()"><img src="Square/x.png"></img></button>
+			<a>Your goal is to correctly guess a character from FE6-8.</a>
+			<a>You have 6 guesses, and each guess gives you information.</a>
+			<a></a>
+			<a>The first collumn indicates the game that the character is from, the second collumn indicates the earliest chapter they join in.</a>
+			<a>The third collumn indicates their starting class, the fourth collumn indicates their starting level, and the fifth collumn indicates their affinity.</a>
+			<a></a>
+			<a>A green square is correct, a red square is incorrect, a blue square tells you if the number should be higher or lower, </a>
+			<a>and a yellow square means the class is in the correct class tree.</a>
+			<a></a>
+			<a>Characters in both FE6 and FE7 have an entry for both games (e.g. Karel (6) and Karel (7))</a>
+			<a>FE7 characters assume you skipped Lyn mode and are playing Hector mode.</a>
+			<a>FE7 characters chapter number is subtracted by 10, to make the games have similiar chapter amounts.</a>
+			<a>Characters gained in gaiden chapters (e.g. FE6 Douglas) are counted as joining in the first regular chapter after the gaiden.</a>
+			<a>Kyle, Forde, and Ephraim join in chapter 5x, but do not permanently join your party until chapter 8</a>
+			<a>Characters from the Creature Campaign and the Trial maps are excluded.</a>
+		</div>
+    
+		<div class="dropdown-content" id="endscreen">
+			<button style="float:right; background-color:#141414; border: none;" onclick="closeEndscreen()"><img src="Square/x.png"></img></button>
+			<a style="height:20px;"></a>
+			<a id="winOrLose">You won!</a>
+			<a id="answer">The character was Niime.</a>
+			<a id="stats">Wins: 14 | Losses: 1 | Streak: 10</a>
+			<a><button onclick="share()">Share</button></a>
+		</div>
+    </div>
+	<div class="flex">
+		<div class="dropdown-content" id="popup">
+			<a id="popupText">Copied to clipboard.</a>
+		</div>
+	</div>
+	<div id="knowledge-cont">
+		<div id="affinity">
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Fire"><img src="Affinity/Fire.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Ice"><img src="Affinity/Ice.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Wind"><img src="Affinity/Wind.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Anima"><img src="Affinity/Anima.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Light"><img src="Affinity/Light.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Dark"><img src="Affinity/Dark.png"></img></div>
+            <div class="knowledge-div" style="background-image: url(Square/gray.png);" id="Thunder"><img src="Affinity/Thunder.png"></img></div>
+        </div>
+        <div id="unpromoted">
+			<div class="knowledge-div" id="Lord"><img src="Class/Lord.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Journeyman"><img src="Class/Journeyman.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Recruit"><img src="Class/Recruit.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Transporter"><img src="Class/Transporter.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+            <div class="knowledge-div" id="Archsage"><img src="Class/Archsage.png"></img></div>
+			
+			<div class="knowledge-div" id="Pupil"><img src="Class/Pupil.png"></img></div>
+			
+			<div class="knowledge-div" id="Dancer"><img src="Class/Dancer.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Manakete"><img src="Class/Manakete.png"></img></div>
+		</div>
+		<div id="promoted">
+			<div class="knowledge-div" id="Myrmidon"><img src="Class/Myrmidon.png"></img></div>
+			<div class="knowledge-div" id="Thief"><img src="Class/Thief.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Brigand"><img src="Class/Brigand.png"></img></div>
+			<div class="knowledge-div" id="Pirate"><img src="Class/Pirate.png"></img></div>
+			<div class="knowledge-div" id="Fighter"><img src="Class/Fighter.png"></img></div>
+			<div class="knowledge-div" id="Mercenary"><img src="Class/Mercenary.png"></img></div>
+			<div class="knowledge-div" id="Archer"><img src="Class/Archer.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Knight"><img src="Class/Knight.png"></img></div>
+			<div class="knowledge-div" id="Cavalier"><img src="Class/Cavalier.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Nomad"><img src="Class/Nomad.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Shaman"><img src="Class/Shaman.png"></img></div>
+			<div class="knowledge-div" id="Mage"><img src="Class/Mage.png"></img></div>
+			<div class="knowledge-div" id="Monk"><img src="Class/Monk.png"></img></div>
+			<div class="knowledge-div" id="Priest"><img src="Class/Priest.png"></img></div>
+			<div class="knowledge-div" id="Cleric"><img src="Class/Cleric.png"></img></div>
+			<div class="knowledge-div" id="Troubador"><img src="Class/Troubador.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Pegasus Knight"><img src="Class/Pegasus Knight.png"></img></div>
+			<div class="knowledge-div" id="Wyvern Rider"><img src="Class/Wyvern Rider.png"></img></div>
+			
+        </div>
+		<div id="unique">
+			<div class="knowledge-div" id="Swordmaster"><img src="Class/Swordmaster.png"></img></div>
+			<div class="knowledge-div" id="Assassin"><img src="Class/Assassin.png"></img></div>
+			<div class="knowledge-div" id="Rogue"><img src="Class/Rogue.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Berserker"><img src="Class/Berserker.png"></img></div>
+			<div class="knowledge-div" id="Warrior"><img src="Class/Warrior.png"></img></div>
+			<div class="knowledge-div" id="Hero"><img src="Class/Hero.png"></img></div>
+			<div class="knowledge-div" id="Ranger"><img src="Class/Ranger.png"></img></div>
+			<div class="knowledge-div" id="Sniper"><img src="Class/Sniper.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="General"><img src="Class/General.png"></img></div>
+			<div class="knowledge-div" id="Great Knight"><img src="Class/Great Knight.png"></img></div>
+			<div class="knowledge-div" id="Paladin"><img src="Class/Paladin.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Nomadic Trooper"><img src="Class/Nomadic Trooper.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Druid"><img src="Class/Druid.png"></img></div>
+			<div class="knowledge-div" id="Summoner"><img src="Class/Summoner.png"></img></div>
+			<div class="knowledge-div" id="Mage Knight"><img src="Class/Mage Knight.png"></img></div>
+			<div class="knowledge-div" id="Sage"><img src="Class/Sage.png"></img></div>
+			<div class="knowledge-div" id="Bishop"><img src="Class/Bishop.png"></img></div>
+			<div class="knowledge-div" id="Valkyrie"><img src="Class/Valkyrie.png"></img></div>
+			
+			<div class="knowledge-div"><img src="Square/black.png"></img></div>
+			
+			<div class="knowledge-div" id="Falcoknight"><img src="Class/Falcoknight.png"></img></div>
+			<div class="knowledge-div" id="Wyvern Knight"><img src="Class/Wyvern Knight.png"></img></div>
+			<div class="knowledge-div" id="Wyvern Lord"><img src="Class/Wyvern Lord.png"></img></div>
+        </div>
+    </div>
+	<div class="flex">
+		<p>Inspired by <a style="color:white;" href="https://doopu.github.io/solkatti/">Sol Katti</a>, <a style="color:white;" href="https://ferdle.github.io">Ferdle</a> and <a style="color:white;" href="https://squirdle.fireblend.com">Squirdle</a></p>
+	</div>
+	<script>
+		const CHARS = csv_To_Array("name,game,chapter,level,class,affinity\nRoy,6,1,1,Lord,Fire\nMarcus (6),6,1,1,Paladin,Ice\nAlen,6,1,1,Cavalier,Fire\nLance,6,1,1,Cavalier,Anima\nWolt,6,1,1,Archer,Ice\nBors,6,1,1,Knight,Wind\nMerlinus (6),6,2,1,Transporter,Dark\nElen,6,2,2,Cleric,Wind\nDieck,6,2,5,Mercenary,Thunder\nWade,6,2,2,Fighter,Fire\nLot,6,2,3,Fighter,Anima\nShanna,6,2,1,Pegasus Knight,Wind\nChad,6,3,1,Thief,Thunder\nLugh,6,3,1,Mage,Fire\nClarine,6,4,1,Troubador,Thunder\nRutger,6,4,4,Myrmidon,Dark\nSaul,6,6,5,Priest,Ice\nDorothy,6,6,3,Archer,Fire\nSue,6,6,1,Nomad,Wind\nZelot,6,7,1,Paladin,Dark\nTrec,6,7,4,Cavalier,Wind\nNoah,6,7,7,Cavalier,Anima\nAstolfo,6,8,10,Thief,Dark\nLilina,6,8,1,Mage,Light\nBarthe,6,8,9,Knight,Ice\nOgier,6,8,3,Mercenary,Wind\nGwendolyn,6,8,1,Knight,Fire\nFir,6,9,1,Myrmidon,Fire\nSin,6,9,5,Nomad,Ice\nGeese,6,10,10,Pirate,Fire\nGonzalez,6,10,5,Brigand,Thunder\nKlein,6,10,1,Sniper,Ice\nThea,6,10,8,Pegasus Knight,Ice\nLarum,6,11,1,Dancer,Thunder\nElffin,6,11,1,Dancer,Light\nEchidna,6,11,1,Hero,Ice\nBartre (6),6,11,2,Warrior,Thunder\nRaigh,6,12,12,Shaman,Ice\nCath,6,12,5,Thief,Anima\nMelady,6,13,10,Wyvern Rider,Dark\nPerceval,6,13,5,Paladin,Dark\nCecilia,6,14,1,Valkyrie,Anima\nSophia,6,14,1,Shaman,Dark\nIgrene,6,15,1,Sniper,Ice\nGarret,6,15,1,Berserker,Wind\nFae,6,16,1,Manakete,Light\nHugh,6,16,15,Mage,Wind\nZeiss,6,16,7,Wyvern Rider,Thunder\nDouglas,6,17,8,General,Thunder\nNiime,6,19,18,Druid,Anima\nJuno,6,20,9,Falcoknight,Light\nDayan,6,20,12,Nomadic Trooper,Anima\nYoder,6,21,20,Bishop,Light\nKarel (6),6,23,19,Swordmaster,Light\nHector,7,1,1,Lord,Thunder\nMatthew,7,1,2,Thief,Wind\nOswin,7,2,9,Knight,Anima\nSerra,7,2,1,Cleric,Thunder\nEliwood,7,2,1,Lord,Anima\nMarcus (7),7,2,1,Paladin,Ice\nLowen,7,2,2,Cavalier,Fire\nRebecca,7,2,1,Archer,Fire\nDorcas,7,2,3,Fighter,Fire\nBartre (7),7,2,2,Fighter,Thunder\nGuy,7,3,3,Myrmidon,Fire\nMerlinus (7),7,4,5,Transporter,Dark\nErk,7,4,1,Mage,Thunder\nPriscilla,7,4,3,Troubador,Wind\nLyn,7,6,4,Lord,Wind\nSain,7,6,4,Cavalier,Wind\nKent,7,6,5,Cavalier,Anima\nWil,7,6,4,Archer,Wind\nFlorina,7,6,3,Pegasus Knight,Light\nRaven,7,7,5,Mercenary,Ice\nLucius,7,7,3,Monk,Light\nCanas,7,8,8,Shaman,Anima\nDart,7,9,8,Pirate,Fire\nFiora,7,9,7,Pegasus Knight,Wind\nLegault,7,10,12,Thief,Ice\nNinian,7,11,1,Dancer,Ice\nIsadora,7,12,1,Paladin,Dark\nHeath,7,12,7,Wyvern Rider,Thunder\nRath,7,12,9,Nomad,Dark\nHawkeye,7,13,4,Berserker,Wind\nGeitz,7,14,3,Warrior,Thunder\nWallace,7,14,1,General,Thunder\nFarina,7,15,12,Pegasus Knight,Anima\nPent,7,16,6,Sage,Ice\nLouise,7,16,4,Sniper,Light\nKarel (7),7,17,8,Swordmaster,Light\nHarken,7,17,8,Hero,Fire\nNino,7,18,5,Mage,Fire\nJaffar,7,19,13,Assassin,Ice\nVaida,7,19,9,Wyvern Lord,Fire\nKarla,7,22,5,Swordmaster,Dark\nRenault,7,22,16,Bishop,Anima\nAthos,7,23,20,Archsage,Anima\nEirika,8,1,1,Lord,Light\nSeth,8,1,1,Paladin,Anima\nFranz,8,1,1,Cavalier,Light\nGilliam,8,1,4,Knight,Thunder\nVanessa,8,2,1,Pegasus Knight,Anima\nMoulder,8,2,3,Priest,Anima\nRoss,8,2,1,Journeyman,Fire\nGarcia,8,2,4,Fighter,Fire\nNeimi,8,3,1,Archer,Fire\nColm,8,3,2,Thief,Light\nArtur,8,4,2,Monk,Ice\nLute,8,4,1,Mage,Anima\nNatasha,8,5,1,Cleric,Ice\nJoshua,8,5,5,Myrmidon,Wind\nEphraim,8,8,4,Lord,Fire\nForde,8,8,6,Cavalier,Wind\nKyle,8,8,5,Cavalier,Ice\nTana,8,9,4,Pegasus Knight,Wind\nAmelia,8,9,1,Recruit,Thunder\nInnes,8,10,1,Sniper,Ice\nGerik,8,10,10,Mercenary,Thunder\nTethys,8,10,1,Dancer,Fire\nMarisa,8,10,5,Myrmidon,Ice\nL'Arachel,8,11,3,Troubador,Light\nDozla,8,11,1,Berserker,Thunder\nSaleh,8,12,1,Sage,Wind\nEwan,8,12,1,Pupil,Light\nCormag,8,10,9,Wyvern Rider,Fire\nRennac,8,14,1,Rogue,Dark\nDuessel,8,10,8,Great Knight,Anima\nKnoll,8,15,10,Shaman,Dark\nMyrrh,8,16,1,Manakete,Wind\nSyrene,8,17,1,Falcoknight,Thunder")
+		const classes = [
+			"",
+			"Journeyman",
+			"Brigand",
+			"Pirate",
+			"Fighter",
+			"Mercenary",
+			"Archer",
+			"Berserker",
+			"Warrior",
+			"Hero",
+			"Ranger",
+			"Sniper",
+			"",
+			"Nomad",
+			"Nomadic Trooper",
+			"",
+			"Myrmidon",
+			"Thief",
+			"Swordmaster",
+			"Assassin",
+			"Rogue",
+			"",
+			"Pegasus Knight",
+			"Wyvern Rider",
+			"Falcoknight",
+			"Wyvern Knight",
+			"Wyvern Lord",
+			"",
+			"Recruit",
+			"Knight",
+			"Cavalier",
+			"General",
+			"Great Knight",
+			"Paladin",
+			"",
+			"Pupil",
+			"Shaman",
+			"Druid",
+			"Summoner",
+			"Mage",
+			"Mage Knight",
+			"Sage",
+			"Priest",
+			"Monk",
+			"Bishop",
+			"Valkyrie",
+			"Cleric",
+			"Troubador",
+			"",
+			"Archsage",
+			"Dancer",
+			"Manakete",
+			"Lord",
+			"Transporter",
+			""
+		]
+		const classTrees = [
+			[],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			["Journeyman","Brigand","Pirate","Fighter","Mercenary","Archer","Berserker","Warrior","Hero","Ranger","Sniper"],
+			[],
+			["Nomad","Nomadic Trooper"],
+			["Nomad","Nomadic Trooper"],
+			[],
+			["Myrmidon","Thief","Swordmaster","Assassin","Rogue"],
+			["Myrmidon","Thief","Swordmaster","Assassin","Rogue"],
+			["Myrmidon","Thief","Swordmaster","Assassin","Rogue"],
+			["Myrmidon","Thief","Swordmaster","Assassin","Rogue"],
+			["Myrmidon","Thief","Swordmaster","Assassin","Rogue"],
+			[],
+			["Pegasus Knight","Wyvern Rider","Falcoknight","Wyvern Knight","Wyvern Lord"],
+			["Pegasus Knight","Wyvern Rider","Falcoknight","Wyvern Knight","Wyvern Lord"],
+			["Pegasus Knight","Wyvern Rider","Falcoknight","Wyvern Knight","Wyvern Lord"],
+			["Pegasus Knight","Wyvern Rider","Falcoknight","Wyvern Knight","Wyvern Lord"],
+			["Pegasus Knight","Wyvern Rider","Falcoknight","Wyvern Knight","Wyvern Lord"],
+			[],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			["Recruit","Knight","Cavalier","General","Great Knight","Paladin"],
+			[],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			["Pupil","Shaman","Druid","Summoner","Mage","Mage Knight","Sage","Priest","Monk","Bishop","Valkyrie","Cleric","Troubador"],
+			[],
+			["Archsage"],
+			["Dancer"],
+			["Manakete"],
+			["Lord"],
+			["Transporter"],
+			[]
+		]
+		
+		var date = new Date()
+		var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0]
+		date = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+		
+		let wins = getCookie('wins')
+		let streak = getCookie('streak')
+		let losses = getCookie('losses')
+		if (wins == "")
+			setCookie("wins","0",365)
+		if (losses == "")
+			setCookie("losses","0",365)
+		if (streak == "")
+			setCookie("streak","0",365)
+		
+		var CHARNAMES = []
+		for (let i = 0; i < CHARS.length; i++) {
+			CHARNAMES[i] = CHARS[i].name.toLowerCase()
+		}
+
+		const NUMBER_OF_GUESSES = 6;
+		let guessesRemaining = NUMBER_OF_GUESSES;
+		
+		var seed = xmur3(dateString)
+		var rand = mulberry32(seed())
+		
+		let rightCharIndex = Math.floor(rand() * CHARS.length)
+		//let rightCharIndex = Math.floor(Math.random() * CHARS.length)
+		let rightChar = CHARS[rightCharIndex]
+		
+		var win = true
+		
+		var boardColors = [
+			["","","","",""],
+			["","","","",""],
+			["","","","",""],
+			["","","","",""],
+			["","","","",""],
+			["","","","",""],
+			["","","","",""]
+		]
+		
+		const node = document.getElementById("typeBox")
+		node.addEventListener("keyup", function(event) {
+			if (event.key === "Enter") {
+				checkGuess(node.value, true)
+			}
+		})
+
+		function initBoard() {
+			let board = document.getElementById("game-board");
+			let searchbar = document.getElementById("searchbar")
+
+			for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
+				let row = document.createElement("div")
+				row.className = "guess-row"
+				
+				for (let j = 0; j < 5; j++) {
+					let box = document.createElement("div")
+					box.className = "guess-box"
+					let img = document.createElement("img")
+					img.src = ""
+					if (j == 2) {
+						box.style.backgroundImage = 'url(Square/gray_class.png)'
+					}
+					box.appendChild(img)
+					row.appendChild(box)
+				}
+
+				board.appendChild(row)
+			}
+			for (let i = 0; i < CHARS.length; i++) {
+				//<a onclick="closeSearchbar(0)">Roy <img src="Affinity/Small Fire.png"></img></a>
+				let row = document.createElement("a")
+				row.setAttribute("onclick", "closeSearchbar(" + i + ")")
+				
+				let img = document.createElement("img")
+				img.src = "Affinity/Small " + CHARS[i].affinity + ".png"
+				row.textContent = CHARS[i].name + " "
+				
+				row.appendChild(img)
+				searchbar.appendChild(row)
+			}
+			let cDateString = getCookie("date")
+			if (cDateString == dateString) {
+				for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
+					let g = getCookie("guess" + i)
+					if (g == "") {
+						break
+					}
+					checkGuess(g,false)
+				}
+			} else {
+				for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
+					setCookie("guess" + i, "", 365)
+				}
+				setCookie("date",dateString,365)
+				let cWinDateString = getCookie("winDate")
+				if (cWinDateString != cDateString) {
+					setCookie("streak","0",365)
+				}
+			}
+		}
+
+		initBoard()
+
+		function checkGuess (guessString, incwin) {
+			let row = document.getElementsByClassName("guess-row")[NUMBER_OF_GUESSES - guessesRemaining]
+
+			if (guessesRemaining === 0) {
+				return
+			}
+			if (CHARNAMES.indexOf(guessString.toLowerCase()) == -1) {
+				return
+			}
+			let searchbar = document.getElementById("searchbar")
+			searchbar.style.display = "none"
+			
+			setCookie("guess" + (NUMBER_OF_GUESSES - guessesRemaining), guessString, 365)
+			
+			guessChar = CHARS[CHARNAMES.indexOf(guessString.toLowerCase())]
+			node.value = ""
+			
+			for (let i = 0; i < 5; i++) {
+				let letterColor = ''
+				let box = row.children[i]
+				
+				if (i == 0) {
+					if (guessChar.game == rightChar.game) {
+						letterColor = "Square/green.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "g"
+					} else if (parseInt(guessChar.game) < rightChar.game) {
+						letterColor = "Square/up.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					} else {
+						letterColor = "Square/down.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					}
+				}
+				
+				if (i == 1) {
+					if (guessChar.chapter == rightChar.chapter) {
+						letterColor = "Square/green.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "g"
+					} else if (parseInt(guessChar.chapter) < rightChar.chapter) {
+						letterColor = "Square/up.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					} else {
+						letterColor = "Square/down.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					}
+				}
+				
+				if (i == 2) {
+					if (guessChar.class == rightChar.class) {
+						letterColor = "Square/green_class.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "g"
+					} else {
+						var rightClassTree = classTrees[classes.indexOf(rightChar.class)]
+						if (rightClassTree.includes(guessChar.class)) {
+							letterColor = "Square/yellow_class.png"
+							boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "y"
+						} else {
+							letterColor = "Square/red_class.png"
+							boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "r"
+						}
+					}
+				}
+				
+				if (i == 3) {
+					if (guessChar.level == rightChar.level) {
+						letterColor = "Square/green.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "g"
+					} else if (parseInt(guessChar.level) < rightChar.level) {
+						letterColor = "Square/up.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					} else {
+						letterColor = "Square/down.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "b"
+					}
+				}
+				
+				if (i == 4) {
+					if (guessChar.affinity == rightChar.affinity) {
+						letterColor = "Square/green.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "g"
+					} else {
+						letterColor = "Square/red.png"
+						boardColors[NUMBER_OF_GUESSES - guessesRemaining][i] = "r"
+					}
+				}
+
+				let delay = 250 * i
+				if (incwin == false) {
+					box.style.backgroundImage = "url(" + letterColor + ")"
+					if (i == 0) {
+						box.textContent = "" + guessChar.game
+					}
+					if (i == 1) {
+						box.textContent = "" + guessChar.chapter
+					}
+					if (i == 2) {
+						let rightGuessClassTree = classTrees[classes.indexOf(rightChar.class)]
+						let guessClassTree = classTrees[classes.indexOf(guessChar.class)]
+						let tileColor = "Square/red_class.png"
+						
+						if (rightGuessClassTree.includes(guessChar.class) && letterColor != "Square/green_class.png") {
+							tileColor = "Square/yellow_class.png"
+						}
+						for (let i = 0; i < guessClassTree.length; i++) {
+							let tile = document.getElementById(guessClassTree[i])
+							if (tileColor == "Square/red_class.png" || (tile.style.backgroundImage != 'url("Square/red_class.png")' && tile.style.backgroundImage != 'url("Square/green_class.png")')) {
+								tile.style.backgroundImage = "url(" + tileColor + ")"
+							}
+						}
+						
+						let tile = document.getElementById(guessChar.class)
+						if (letterColor == "Square/yellow_class.png") {
+							letterColor = "Square/red_class.png"
+						}
+						tile.style.backgroundImage = "url(" + letterColor + ")"
+						let img = box.children[0]
+						img.src = "Class/" + guessChar.class + ".png"
+					}
+					if (i == 3) {
+						box.textContent = "" + guessChar.level
+					}
+					if (i == 4) {
+						let tile = document.getElementById(guessChar.affinity)
+						tile.style.backgroundImage = "url(" + letterColor + ")"
+						let img = box.children[0]
+						img.src = "Affinity/" + guessChar.affinity + ".png"
+					}
+				} else {
+					setTimeout(()=> {
+						box.style.backgroundImage = "url(" + letterColor + ")"
+						if (i == 0) {
+							box.textContent = "" + guessChar.game
+						}
+						if (i == 1) {
+							box.textContent = "" + guessChar.chapter
+						}
+						if (i == 2) {
+							let rightGuessClassTree = classTrees[classes.indexOf(rightChar.class)]
+							let guessClassTree = classTrees[classes.indexOf(guessChar.class)]
+							let tileColor = "Square/red_class.png"
+							
+							if (rightGuessClassTree.includes(guessChar.class) && letterColor != "Square/green_class.png") {
+								tileColor = "Square/yellow_class.png"
+							}
+							for (let i = 0; i < guessClassTree.length; i++) {
+								let tile = document.getElementById(guessClassTree[i])
+								if (tileColor == "Square/red_class.png" || (tile.style.backgroundImage != 'url("Square/red_class.png")' && tile.style.backgroundImage != 'url("Square/green_class.png")')) {
+									tile.style.backgroundImage = "url(" + tileColor + ")"
+								}
+							}
+							
+							let tile = document.getElementById(guessChar.class)
+							if (letterColor == "Square/yellow_class.png") {
+								letterColor = "Square/red_class.png"
+							}
+							tile.style.backgroundImage = "url(" + letterColor + ")"
+							let img = box.children[0]
+							img.src = "Class/" + guessChar.class + ".png"
+						}
+						if (i == 3) {
+							box.textContent = "" + guessChar.level
+						}
+						if (i == 4) {
+							let tile = document.getElementById(guessChar.affinity)
+							tile.style.backgroundImage = "url(" + letterColor + ")"
+							let img = box.children[0]
+							img.src = "Affinity/" + guessChar.affinity + ".png"
+						}
+					}, delay)
+				}
+			}
+
+			if (guessChar.name === rightChar.name) {
+				let wins = getCookie('wins')
+				let streak = getCookie('streak')
+				let losses = getCookie('losses')
+				if (incwin == true) {
+					if (wins == "") {
+						setCookie("wins","1",365)
+					} else {
+						setCookie("wins","" + (parseFloat(wins) + 1),365)
+					}
+					if (streak == "") {
+						setCookie("streak","1",365)
+					} else {
+						setCookie("streak","" + (parseFloat(streak) + 1),365)
+					}
+					setCookie("winDate",dateString,365)
+				}
+				setTimeout(()=> {
+					let endscreen = document.getElementById("endscreen")
+					let endText = document.getElementById("winOrLose")
+					let answer = document.getElementById("answer")
+					let stats = document.getElementById("stats")
+					let wins = getCookie('wins')
+					let streak = getCookie('streak')
+					let losses = getCookie('losses')
+					endText.textContent = "You won!"
+					answer.textContent = "The answer was " + rightChar.name + "."
+					stats.textContent = "Wins: " + wins + " | Losses: " + losses + " | Streak: " + streak
+					endscreen.style.display = "block";
+				},250*6)
+				guessesRemaining = 0
+				return
+			} else {
+				guessesRemaining -= 1;
+
+				if (guessesRemaining === 0) {
+					win = false
+					let losses = getCookie('losses')
+					if (incwin == true) {
+						if (losses == "") {
+							setCookie("losses","1",365)
+						} else {
+							setCookie("losses","" + (parseFloat(losses) + 1),365)
+						}
+						setCookie("streak","0",365)
+					}
+					setTimeout(()=> {
+						let endscreen = document.getElementById("endscreen")
+						let endText = document.getElementById("winOrLose")
+						let answer = document.getElementById("answer")
+						let stats = document.getElementById("stats")
+						let wins = getCookie('wins')
+						let streak = getCookie('streak')
+						let losses = getCookie('losses')
+						endText.textContent = "You lost!"
+						answer.textContent = "The answer was " + rightChar.name + "."
+						stats.textContent = "Wins: " + wins + " | Losses: " + losses + " | Streak: " + streak
+						endscreen.style.display = "block";
+					},250*6)
+				}
+			}
+		}
+		
+		function getCookie(cname) {
+			let name = cname + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+			let ca = decodedCookie.split(';');
+			for(let i = 0; i <ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+		function setCookie(cname, cvalue, exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires="+d.toUTCString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}
+		function closeHelp() {
+			let help = document.getElementById("help")
+			help.style.display = "none";
+		}
+		function openHelp() {
+			let help = document.getElementById("help")
+			help.style.display = "block";
+		}
+		function closeEndscreen() {
+			let endscreen = document.getElementById("endscreen")
+			endscreen.style.display = "none";
+		}
+		function closeSearchbar(x) {
+			let searchbar = document.getElementById("searchbar")
+			let searchbox = searchbar.children[x]
+			node.value = searchbox.textContent.slice(0, searchbox.textContent.length - 1)
+			node.focus()
+			searchbar.style.display = "none"
+		}
+		function filterSearch() {
+			let searchbar = document.getElementById("searchbar")
+			let shown = 0
+			let str = node.value.toLowerCase()
+			for (let i = 0; i < searchbar.children.length; i++) {
+				let txt = searchbar.children[i].textContent.toLowerCase()
+				if (txt.startsWith(str) && shown < 5) {
+					searchbar.children[i].style.display = ""
+					shown ++
+				} else {
+					searchbar.children[i].style.display = "none"
+				}
+			}
+			if (shown > 0 && str != "") {
+				searchbar.style.display = "block"
+			} else {
+				searchbar.style.display = "none"
+			}
+		}
+		function share() {
+			let popup = document.getElementById("popup")
+			let popupText = document.getElementById("popupText")
+			
+			let grid = ""
+			let guesses = 0
+			for (var i = 0; i < NUMBER_OF_GUESSES; i++) {
+				if (boardColors[i][0] == "")
+					break;
+				guesses ++
+				for (var j = 0; j < 5; j++) {
+					if (boardColors[i][j] == "g")
+						grid = grid + "🟩";
+					if (boardColors[i][j] == "y")
+						grid = grid + "🟨";
+					if (boardColors[i][j] == "r")
+						grid = grid + "🟥";
+					if (boardColors[i][j] == "b")
+						grid = grid + '\uD83D\uDFE6';
+				}
+				grid = grid + "\n"
+			}
+			let startDate = new Date("04/06/2022")
+			var time_difference = date.getTime() - (startDate.getTime() - (1000 * 60 * 60 * 12))
+			var days_difference = Math.ceil(time_difference / (1000 * 60 * 60 * 24))
+			if (win == false) 
+				guesses = "X"
+			
+			navigator.clipboard.writeText("FErdle GBA #" + days_difference + " - " + guesses + "/" + NUMBER_OF_GUESSES + "\n" + grid + "https://jacobsmash1.github.io/FErdle-GBA")
+			popupText.textContent = "Copied to clipboard."
+			popup.style.display = "block";
+			setTimeout(()=> {
+				let popup = document.getElementById("popup")
+				popup.style.display = "none";
+			},2000)
+		}
+		
+		function toUTF16(codePoint) {
+			var TEN_BITS = parseInt('1111111111', 2);
+			function u(codeUnit) {
+				return '\\u'+codeUnit.toString(16).toUpperCase();
+			}
+		
+			if (codePoint <= 0xFFFF) {
+				return u(codePoint);
+			}
+			codePoint -= 0x10000;
+
+			// Shift right to get to most significant 10 bits
+			var leadSurrogate = 0xD800 + (codePoint >> 10);
+
+			// Mask to get least significant 10 bits
+			var tailSurrogate = 0xDC00 + (codePoint & TEN_BITS);
+
+			return u(leadSurrogate) + u(tailSurrogate);
+		}
+		
+		function mulberry32(a) {
+			return function() {
+				var t = a += 0x6D2B79F5;
+				t = Math.imul(t ^ t >>> 15, t | 1);
+				t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+				return ((t ^ t >>> 14) >>> 0) / 4294967296;
+			}
+		}
+		
+		function xmur3(str) {
+			for(var i = 0, h = 1779033703 ^ str.length; i < str.length; i++) {
+				h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+				h = h << 13 | h >>> 19;
+			} return function() {
+				h = Math.imul(h ^ (h >>> 16), 2246822507);
+				h = Math.imul(h ^ (h >>> 13), 3266489909);
+				return (h ^= h >>> 16) >>> 0;
+			}
+		}
+	
+		function csv_To_Array(str, delimiter = ",") {
+			const header_cols = str.slice(0, str.indexOf("\n")).split(delimiter);
+			const row_data = str.slice(str.indexOf("\n") + 1).split("\n");
+			const arr = row_data.map(function (row) {
+				const values = row.split(delimiter);
+				const el = header_cols.reduce(function (object, header, index) {
+					object[header] = values[index];
+					return object;
+					}, {});
+				return el;
+			});
+
+			return arr;
+		}
+	</script>
+</body>
+</html>
